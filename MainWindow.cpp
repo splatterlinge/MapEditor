@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+	config = new QSettings();
+
 	graphicsScene = new QGraphicsScene(ui->graphicsView);
 	ui->graphicsView->setScene(graphicsScene);
 
@@ -63,8 +65,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->blobPositionYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->blobSizeXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->blobSizeYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
-
-
 
 	/*
 	s.beginGroup( "Terrain" );
@@ -312,52 +312,55 @@ void MainWindow::update()
 
 void MainWindow::on_actionSave_triggered()
 {
-	config->beginGroup("Terrain");
-		config->setValue("heightMapPath", heightMapPath);
-		config->setValue("material", material);
-		config->setValue("materialScaleS", (double)materialScale.x());
-		config->setValue("materialScaleT", (double)materialScale.y());
-		config->setValue("offsetX", (double)offset.x());
-		config->setValue("offsetY", (double)offset.y());
-		config->setValue("offsetZ", (double)offset.z());
-		config->setValue("sizeX", (double)size.x());
-		config->setValue("sizeY", (double)size.y());
-		config->setValue("sizeZ", (double)size.z());
-	config->endGroup();
-
-	config->beginGroup("Water");
-		config->setValue("height", waterHeight);
-	config->endGroup();
-
-	config->remove("Vegetation");
-	int vegeSize = vegetationModel->getList().size();
-	config->beginWriteArray("Vegetation", vegeSize);
-	for(int i=0; i<vegeSize; i++)
+	if(config->isWritable())
 	{
-		Vegetation *v = vegetationModel->getList().at(i);
-		config->setArrayIndex(i);
-		config->setValue("type", v->type);
-		config->setValue("model", v->model);
-		config->setValue("position", v->position);
-		config->setValue("radius", v->radius);
-		config->setValue("number", v->number);
-	}
-	config->endArray();
+		config->beginGroup("Terrain");
+			config->setValue("heightMapPath", heightMapPath);
+			config->setValue("material", material);
+			config->setValue("materialScaleS", (double)materialScale.x());
+			config->setValue("materialScaleT", (double)materialScale.y());
+			config->setValue("offsetX", (double)offset.x());
+			config->setValue("offsetY", (double)offset.y());
+			config->setValue("offsetZ", (double)offset.z());
+			config->setValue("sizeX", (double)size.x());
+			config->setValue("sizeY", (double)size.y());
+			config->setValue("sizeZ", (double)size.z());
+		config->endGroup();
 
-	config->remove("Blob");
-	int blobSize = blobModel->getList().size();
-	config->beginWriteArray("Blob", blobSize);
-	for(int i=0; i<blobSize; i++)
-	{
-		Blob *v = blobModel->getList().at(i);
-		config->setArrayIndex(i);
-		config->setValue("maskPath", v->mask);
-		config->setValue("material", v->material);
-		config->setValue("materialScaleS", v->scaleS);
-		config->setValue("materialScaleT", v->scaleT);
-		config->setValue("rect", v->rect);
+		config->beginGroup("Water");
+			config->setValue("height", waterHeight);
+		config->endGroup();
+
+		config->remove("Vegetation");
+		int vegeSize = vegetationModel->getList().size();
+		config->beginWriteArray("Vegetation", vegeSize);
+		for(int i=0; i<vegeSize; i++)
+		{
+			Vegetation *v = vegetationModel->getList().at(i);
+			config->setArrayIndex(i);
+			config->setValue("type", v->type);
+			config->setValue("model", v->model);
+			config->setValue("position", v->position);
+			config->setValue("radius", v->radius);
+			config->setValue("number", v->number);
+		}
+		config->endArray();
+
+		config->remove("Blob");
+		int blobSize = blobModel->getList().size();
+		config->beginWriteArray("Blob", blobSize);
+		for(int i=0; i<blobSize; i++)
+		{
+			Blob *v = blobModel->getList().at(i);
+			config->setArrayIndex(i);
+			config->setValue("maskPath", v->mask);
+			config->setValue("material", v->material);
+			config->setValue("materialScaleS", v->scaleS);
+			config->setValue("materialScaleT", v->scaleT);
+			config->setValue("rect", v->rect);
+		}
+		config->endArray();
 	}
-	config->endArray();
 }
 
 void MainWindow::on_vegetationAdd_clicked()
