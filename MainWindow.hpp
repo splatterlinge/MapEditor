@@ -54,6 +54,26 @@ private slots:
 
 	void on_waterHeightSpin_valueChanged(double arg1);
 
+	void on_terrainHeightMapEdit_textChanged(const QString &arg1);
+
+	void on_terrainMaterialEdit_textChanged(const QString &arg1);
+
+	void on_terrainScaleSSpin_valueChanged(double arg1);
+
+	void on_terrainScaleTSpin_valueChanged(double arg1);
+
+	void on_terrainOffsetXSpin_valueChanged(double arg1);
+
+	void on_terrainOffsetYSpin_valueChanged(double arg1);
+
+	void on_terrainOffsetZSpin_valueChanged(double arg1);
+
+	void on_terrainSizeXSpin_valueChanged(double arg1);
+
+	void on_terrainSizeYSpin_valueChanged(double arg1);
+
+	void on_terrainSizeZSpin_valueChanged(double arg1);
+
 private:
 	Ui::MainWindow *ui;
 

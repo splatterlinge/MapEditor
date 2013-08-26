@@ -152,20 +152,27 @@ void MainWindow::clear()
 void MainWindow::update()
 {
 	clear();
-	float limit = 256 / size.y() * -offset.y();
-	for(int i=0; i<heightMap.width(); i++)
+
+	QImage img = heightMap;
+	if(size.y() != 0)
 	{
-		for(int j=0; j<heightMap.height(); j++)
+		int limit = qMax(256 / size.y() * -offset.y(), 0.0f);
 		{
-			int g = qGray(heightMap.pixel(i, j));
-			if(g < limit)
+			for(int i=0; i<img.width(); i++)
 			{
-				heightMap.setPixel(i, j, qRgb(0,0,255));
+				for(int j=0; j<img.height(); j++)
+				{
+					int g = qGray(img.pixel(i, j));
+					if(g < limit+waterHeight)
+					{
+						img.setPixel(i, j, qRgb(0,111,255));
+					}
+				}
 			}
 		}
 	}
 
-	graphicsScene->addPixmap(QPixmap::fromImage(heightMap));
+	graphicsScene->addPixmap(QPixmap::fromImage(img));
 
 	int px = -offset.x() * heightMap.width() / size.x();
 	int py = -offset.z() * heightMap.height() / size.z();
@@ -250,15 +257,28 @@ void MainWindow::on_vegetationDelete_clicked()
 
 void MainWindow::on_actionSave_triggered()
 {
+	config->beginGroup("Terrain");
+		config->setValue("heightMapPath", heightMapPath);
+		config->setValue("material", material);
+		config->setValue("materialScaleS", (double)materialScale.x());
+		config->setValue("materialScaleT", (double)materialScale.y());
+		config->setValue("offsetX", (double)offset.x());
+		config->setValue("offsetY", (double)offset.y());
+		config->setValue("offsetZ", (double)offset.z());
+		config->setValue("sizeX", (double)size.x());
+		config->setValue("sizeY", (double)size.y());
+		config->setValue("sizeZ", (double)size.z());
+	config->endGroup();
+
 	config->beginGroup("Water");
 		config->setValue("height", waterHeight);
 	config->endGroup();
 
 	config->remove("Vegetation");
 
-	int size = vegetationModel->getList().size();
-	config->beginWriteArray("Vegetation", size);
-	for(int i=0; i<size; i++)
+	int listSize = vegetationModel->getList().size();
+	config->beginWriteArray("Vegetation", listSize);
+	for(int i=0; i<listSize; i++)
 	{
 		Vegetation *v = vegetationModel->getList().at(i);
 		config->setArrayIndex(i);
@@ -274,4 +294,65 @@ void MainWindow::on_actionSave_triggered()
 void MainWindow::on_waterHeightSpin_valueChanged(double value)
 {
 	waterHeight = value;
+	update();
+}
+
+void MainWindow::on_terrainHeightMapEdit_textChanged(const QString &text)
+{
+	heightMapPath = text;
+	update();
+}
+
+void MainWindow::on_terrainMaterialEdit_textChanged(const QString &text)
+{
+	material = text;
+	update();
+}
+
+void MainWindow::on_terrainScaleSSpin_valueChanged(double value)
+{
+	materialScale.setX(value);
+	update();
+}
+
+void MainWindow::on_terrainScaleTSpin_valueChanged(double value)
+{
+	materialScale.setY(value);
+	update();
+}
+
+void MainWindow::on_terrainOffsetXSpin_valueChanged(double value)
+{
+	offset.setX(value);
+	update();
+}
+
+void MainWindow::on_terrainOffsetYSpin_valueChanged(double value)
+{
+	offset.setY(value);
+	update();
+}
+
+void MainWindow::on_terrainOffsetZSpin_valueChanged(double value)
+{
+	offset.setZ(value);
+	update();
+}
+
+void MainWindow::on_terrainSizeXSpin_valueChanged(double value)
+{
+	size.setX(value);
+	update();
+}
+
+void MainWindow::on_terrainSizeYSpin_valueChanged(double value)
+{
+	size.setY(value);
+	update();
+}
+
+void MainWindow::on_terrainSizeZSpin_valueChanged(double value)
+{
+	size.setZ(value);
+	update();
 }

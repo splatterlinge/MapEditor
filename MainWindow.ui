@@ -47,6 +47,18 @@
         <property name="fieldGrowthPolicy">
          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>2</number>
+        </property>
         <item row="0" column="0">
          <widget class="QLabel" name="terrainHeightMapLabel">
           <property name="text">
@@ -328,8 +340,26 @@
         <string>Water</string>
        </attribute>
        <layout class="QFormLayout" name="formLayout">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>2</number>
+        </property>
         <item row="0" column="1">
          <widget class="QDoubleSpinBox" name="waterHeightSpin">
+          <property name="minimum">
+           <double>-1000.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
           <property name="singleStep">
            <double>0.500000000000000</double>
           </property>
