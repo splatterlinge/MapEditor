@@ -1,6 +1,8 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
 
+#include <QDoubleSpinBox>
+
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
@@ -26,14 +28,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	vegetationMapper->addMapping(ui->vegetationNumberSpin, 0);
 	vegetationMapper->toFirst();
 
-	blobModel = new BlobModel();
-	blobDelegate = new BlobDelegate();
+	blobModel = new BlobModel(this);
+	blobDelegate = new BlobDelegate(this);
 	ui->blobBox->setItemDelegate(blobDelegate);
 	ui->blobBox->setModel(blobModel);
 
-	blobMapper = new QDataWidgetMapper();
+	blobMapper = new QDataWidgetMapper(this);
 	blobMapper->setModel(blobModel);
 	blobMapper->setItemDelegate(blobDelegate);
+	blobMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 	blobMapper->addMapping(ui->blobMaskEdit, 0);
 	blobMapper->addMapping(ui->blobMaterialEdit, 0);
 	blobMapper->addMapping(ui->blobScaleXSpin, 0);
@@ -43,6 +46,21 @@ MainWindow::MainWindow(QWidget *parent) :
 	blobMapper->addMapping(ui->blobSizeXSpin, 0);
 	blobMapper->addMapping(ui->blobSizeYSpin, 0);
 	blobMapper->toFirst();
+
+	connect(ui->toolBox, SIGNAL(currentChanged(int)), this, SLOT(update()));
+
+	connect(ui->vegetationBox, SIGNAL(currentIndexChanged(int)), vegetationMapper, SLOT(setCurrentIndex(int)));
+	connect(ui->vegetationPositionXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
+	connect(ui->vegetationPositionYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
+	connect(ui->vegetationRadiusSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
+	connect(ui->vegetationNumberSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
+
+	connect(ui->blobBox, SIGNAL(currentIndexChanged(int)), blobMapper, SLOT(setCurrentIndex(int)));
+	connect(ui->blobMaskEdit, SIGNAL(textChanged(QString)), this, SLOT(update()));
+	connect(ui->blobPositionXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
+	connect(ui->blobPositionYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
+	connect(ui->blobSizeXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
+	connect(ui->blobSizeYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 
 	baseDir = "/home/michael/work/zwostein-Ununoctium/data/landscape/earth/";
 	config = new QSettings(baseDir+"landscape.ini", QSettings::IniFormat);
@@ -192,7 +210,7 @@ void MainWindow::update()
 	QImage img = heightMap;
 	if(size.y() != 0)
 	{
-		int limit = qMax(256 / size.y() * -offset.y(), 0.0f);
+		int limit = qMax((double)256 / size.y() * -offset.y(), (double)0.0);
 		{
 			for(int i=0; i<img.width(); i++)
 			{
@@ -224,18 +242,23 @@ void MainWindow::update()
 			{
 				Blob *v = blobList.at(i);
 
-				QImage alpha(baseDir+v->mask);
+				QImage alpha(baseDir+ui->blobMaskEdit->text());
 				if(!alpha.isNull())
 				{
-					alpha = alpha.scaled(v->rect.width(), v->rect.height());
+					alpha = alpha.scaled(ui->blobSizeXSpin->value(), ui->blobSizeYSpin->value());
 					QImage img(alpha.width(), alpha.height(), QImage::Format_ARGB32);
 					img = img.scaled(alpha.width(), alpha.height());
 					img.fill(QColor(255,0,255));
 					img.setAlphaChannel(alpha);
 
 					QGraphicsPixmapItem *item = graphicsScene->addPixmap(QPixmap::fromImage(img));
-					item->setPos(v->rect.topLeft());
-					graphicsScene->addRect(v->rect, QPen(QColor(255,0,255), 2, Qt::DotLine));
+					item->setPos(ui->blobPositionXSpin->value(), ui->blobPositionYSpin->value());
+					graphicsScene->addRect(
+								ui->blobPositionXSpin->value(),
+								ui->blobPositionYSpin->value(),
+								ui->blobSizeXSpin->value(),
+								ui->blobSizeYSpin->value(),
+								QPen(QColor(255,0,255), 2, Qt::DotLine));
 				}
 			}
 		}
@@ -251,69 +274,28 @@ void MainWindow::update()
 		int h = v->radius * 2;
 
 		QBrush color;
-		if(ui->toolBox->currentWidget()->objectName() == "vegetationPage" && i == ui->vegetationBox->currentIndex())
-			color = QBrush(QColor(0,255,0,150));
+		if(ui->toolBox->currentWidget()->objectName() == "vegetationPage")
+		{
+			if(i == ui->vegetationBox->currentIndex())
+			{
+				x = ui->vegetationPositionXSpin->value() - ui->vegetationRadiusSpin->value();
+				y = ui->vegetationPositionYSpin->value() - ui->vegetationRadiusSpin->value();
+				w = ui->vegetationRadiusSpin->value() * 2;
+				h = ui->vegetationRadiusSpin->value() * 2;
+				color = QBrush(QColor(0,255,0,150));
+			}
+			else
+			{
+				color = QBrush(QColor(0,255,0,30));
+			}
+		}
 		else
+		{
 			color = QBrush(QColor(0,255,0,30));
+		}
 
 		graphicsScene->addEllipse(x, y, w, h, QPen(Qt::transparent), color);
 	}
-}
-
-void MainWindow::on_vegetationBox_currentIndexChanged(int index)
-{
-	vegetationMapper->setCurrentIndex(index);
-	update();
-}
-
-void MainWindow::on_vegetationTypeEdit_textChanged(const QString &text)
-{
-	vegetationDelegate->commitData(ui->vegetationTypeEdit);
-	update();
-}
-
-void MainWindow::on_vegetationModelEdit_textChanged(const QString &text)
-{
-	vegetationDelegate->commitData(ui->vegetationModelEdit);
-	update();
-}
-
-void MainWindow::on_vegetationPositionXSpin_valueChanged(int value)
-{
-	vegetationDelegate->commitData(ui->vegetationPositionXSpin);
-	update();
-}
-
-void MainWindow::on_vegetationPositionYSpin_valueChanged(int value)
-{
-	vegetationDelegate->commitData(ui->vegetationPositionYSpin);
-	update();
-}
-
-void MainWindow::on_vegetationRadiusSpin_valueChanged(int value)
-{
-	vegetationDelegate->commitData(ui->vegetationRadiusSpin);
-	update();
-}
-
-void MainWindow::on_vegetationNumberSpin_valueChanged(int value)
-{
-	vegetationDelegate->commitData(ui->vegetationNumberSpin);
-	update();
-}
-
-void MainWindow::on_vegetationAdd_clicked()
-{
-	int size = vegetationModel->getList().size();
-	vegetationModel->addData("", "", QPoint(0,0), 0, 0);
-	ui->vegetationBox->setCurrentIndex(size);
-}
-
-void MainWindow::on_vegetationDelete_clicked()
-{
-	int index = ui->vegetationBox->currentIndex();
-	vegetationModel->removeRow(index, QModelIndex());
-	ui->vegetationBox->setCurrentIndex(index-1);
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -364,6 +346,20 @@ void MainWindow::on_actionSave_triggered()
 		config->setValue("rect", v->rect);
 	}
 	config->endArray();
+}
+
+void MainWindow::on_vegetationAdd_clicked()
+{
+	int size = vegetationModel->getList().size();
+	vegetationModel->addData("", "", QPoint(0,0), 0, 0);
+	ui->vegetationBox->setCurrentIndex(size);
+}
+
+void MainWindow::on_vegetationDelete_clicked()
+{
+	int index = ui->vegetationBox->currentIndex();
+	vegetationModel->removeRow(index, QModelIndex());
+	ui->vegetationBox->setCurrentIndex(index-1);
 }
 
 void MainWindow::on_waterHeightSpin_valueChanged(double value)
@@ -432,12 +428,6 @@ void MainWindow::on_terrainSizeZSpin_valueChanged(double value)
 	update();
 }
 
-void MainWindow::on_blobBox_currentIndexChanged(int index)
-{
-	blobMapper->setCurrentIndex(index);
-	update();
-}
-
 void MainWindow::on_blobAdd_clicked()
 {
 	int size = blobModel->getList().size();
@@ -450,9 +440,4 @@ void MainWindow::on_blobDelete_clicked()
 	int index = ui->blobBox->currentIndex();
 	blobModel->removeRow(index, QModelIndex());
 	ui->blobBox->setCurrentIndex(index-1);
-}
-
-void MainWindow::on_toolBox_currentChanged(int index)
-{
-	update();
 }

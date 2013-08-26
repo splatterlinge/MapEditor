@@ -41,6 +41,7 @@ public:
 	bool removeRow(int row, const QModelIndex &parent);
 
 	QList<Vegetation *> getList() { return items; }
+
 signals:
 
 public slots:

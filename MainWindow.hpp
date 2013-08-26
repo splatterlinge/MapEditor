@@ -15,6 +15,7 @@
 #include <QVector3D>
 #include <QImage>
 #include <QRgb>
+#include <qmath.h>
 
 #include "VegetationModel.hpp"
 #include "BlobModel.hpp"
@@ -31,23 +32,11 @@ public:
 	~MainWindow();
 
 	void clear();
+
+public slots:
 	void update();
 
 private slots:
-	void on_vegetationBox_currentIndexChanged(int index);
-
-	void on_vegetationPositionXSpin_valueChanged(int arg1);
-
-	void on_vegetationPositionYSpin_valueChanged(int arg1);
-
-	void on_vegetationRadiusSpin_valueChanged(int arg1);
-
-	void on_vegetationNumberSpin_valueChanged(int arg1);
-
-	void on_vegetationModelEdit_textChanged(const QString &arg1);
-
-	void on_vegetationTypeEdit_textChanged(const QString &arg1);
-
 	void on_vegetationAdd_clicked();
 
 	void on_vegetationDelete_clicked();
@@ -76,13 +65,9 @@ private slots:
 
 	void on_terrainSizeZSpin_valueChanged(double arg1);
 
-	void on_blobBox_currentIndexChanged(int index);
-
 	void on_blobAdd_clicked();
 
 	void on_blobDelete_clicked();
-
-	void on_toolBox_currentChanged(int index);
 
 private:
 	Ui::MainWindow *ui;

@@ -88,7 +88,6 @@ void BlobDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, cons
 		QLineEdit * edit = static_cast<QLineEdit*>(editor);
 		if(edit)
 			v->material = edit->text();
-		return;
 	}
 	if(editor->objectName() == "blobScaleXSpin")
 	{
@@ -108,14 +107,14 @@ void BlobDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, cons
 	{
 		QSpinBox * edit = static_cast<QSpinBox*>(editor);
 		if(edit)
-			v->rect.setLeft(edit->value());
+			v->rect.moveLeft(edit->value());
 		return;
 	}
 	if(editor->objectName() == "blobPositionYSpin")
 	{
 		QSpinBox * edit = static_cast<QSpinBox*>(editor);
 		if(edit)
-			v->rect.setTop(edit->value());
+			v->rect.moveTop(edit->value());
 		return;
 	}
 	if(editor->objectName() == "blobSizeXSpin")
