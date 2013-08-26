@@ -16,6 +16,7 @@
 #include <QRgb>
 
 #include "VegetationModel.hpp"
+#include "BlobModel.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -74,6 +75,8 @@ private slots:
 
 	void on_terrainSizeZSpin_valueChanged(double arg1);
 
+	void on_blobBox_currentIndexChanged(int index);
+
 private:
 	Ui::MainWindow *ui;
 
@@ -95,6 +98,10 @@ private:
 	QDataWidgetMapper *vegetationMapper;
 	VegetationDelegate *vegetationDelegate;
 	VegetationModel *vegetationModel;
+
+	QDataWidgetMapper *blobMapper;
+	BlobDelegate *blobDelegate;
+	BlobModel *blobModel;
 };
 
 #endif // MAINWINDOW_HPP

@@ -26,6 +26,24 @@ MainWindow::MainWindow(QWidget *parent) :
 	vegetationMapper->addMapping(ui->vegetationNumberSpin, 0);
 	vegetationMapper->toFirst();
 
+	blobModel = new BlobModel();
+	blobDelegate = new BlobDelegate();
+	ui->blobBox->setItemDelegate(blobDelegate);
+	ui->blobBox->setModel(blobModel);
+
+	blobMapper = new QDataWidgetMapper();
+	blobMapper->setModel(blobModel);
+	blobMapper->setItemDelegate(blobDelegate);
+	blobMapper->addMapping(ui->blobMaskEdit, 0);
+	blobMapper->addMapping(ui->blobMaterialEdit, 0);
+	blobMapper->addMapping(ui->blobScaleXSpin, 0);
+	blobMapper->addMapping(ui->blobScaleYSpin, 0);
+	blobMapper->addMapping(ui->blobPositionXSpin, 0);
+	blobMapper->addMapping(ui->blobPositionYSpin, 0);
+	blobMapper->addMapping(ui->blobSizeXSpin, 0);
+	blobMapper->addMapping(ui->blobSizeYSpin, 0);
+	blobMapper->toFirst();
+
 	baseDir = "/home/michael/work/zwostein-Ununoctium/data/landscape/earth/";
 	config = new QSettings(baseDir+"landscape.ini", QSettings::IniFormat);
 
@@ -67,7 +85,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		ui->waterHeightSpin->setValue(waterHeight);
 	config->endGroup();
 
-	int vegeNum = config->beginReadArray( "Vegetation" );
+	int vegeNum = config->beginReadArray("Vegetation");
 		for( int i=0; i<vegeNum; i++ )
 		{
 			config->setArrayIndex( i );
@@ -82,6 +100,22 @@ MainWindow::MainWindow(QWidget *parent) :
 		}
 	config->endArray();
 	ui->vegetationBox->setCurrentIndex(0);
+
+	int blobNum = config->beginReadArray("Blob");
+		for( int i=0; i<blobNum; i++ )
+		{
+			config->setArrayIndex( i );
+
+			blobModel->addData(
+						config->value("maskPath").toString(),
+						config->value("material").toString(),
+						config->value("materialScaleS").toDouble(),
+						config->value("materialScaleT").toDouble(),
+						config->value("rect").toRect()
+						);
+		}
+	config->endArray();
+	ui->blobBox->setCurrentIndex(0);
 
 	graphicsScene->setSceneRect(heightMap.rect());
 	ui->graphicsView->setFixedWidth(heightMap.width());
@@ -275,10 +309,9 @@ void MainWindow::on_actionSave_triggered()
 	config->endGroup();
 
 	config->remove("Vegetation");
-
-	int listSize = vegetationModel->getList().size();
-	config->beginWriteArray("Vegetation", listSize);
-	for(int i=0; i<listSize; i++)
+	int vegeSize = vegetationModel->getList().size();
+	config->beginWriteArray("Vegetation", vegeSize);
+	for(int i=0; i<vegeSize; i++)
 	{
 		Vegetation *v = vegetationModel->getList().at(i);
 		config->setArrayIndex(i);
@@ -287,6 +320,21 @@ void MainWindow::on_actionSave_triggered()
 		config->setValue("position", v->position);
 		config->setValue("radius", v->radius);
 		config->setValue("number", v->number);
+	}
+	config->endArray();
+
+	config->remove("Blob");
+	int blobSize = blobModel->getList().size();
+	config->beginWriteArray("Blob", blobSize);
+	for(int i=0; i<blobSize; i++)
+	{
+		Blob *v = blobModel->getList().at(i);
+		config->setArrayIndex(i);
+		config->setValue("maskPath", v->mask);
+		config->setValue("material", v->material);
+		config->setValue("materialScaleS", v->scaleS);
+		config->setValue("materialScaleT", v->scaleT);
+		config->setValue("rect", v->rect);
 	}
 	config->endArray();
 }
@@ -354,5 +402,11 @@ void MainWindow::on_terrainSizeYSpin_valueChanged(double value)
 void MainWindow::on_terrainSizeZSpin_valueChanged(double value)
 {
 	size.setZ(value);
+	update();
+}
+
+void MainWindow::on_blobBox_currentIndexChanged(int index)
+{
+	blobMapper->setCurrentIndex(index);
 	update();
 }

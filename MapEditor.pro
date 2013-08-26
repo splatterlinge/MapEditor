@@ -14,9 +14,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    VegetationModel.cpp
+    VegetationModel.cpp \
+    BlobModel.cpp
 
 HEADERS  += MainWindow.hpp \
-    VegetationModel.hpp
+    VegetationModel.hpp \
+    BlobModel.hpp
 
 FORMS    += MainWindow.ui
