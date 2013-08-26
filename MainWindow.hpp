@@ -15,6 +15,8 @@
 #include <QVector3D>
 #include <QImage>
 #include <QRgb>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <qmath.h>
 
 #include "VegetationModel.hpp"
@@ -32,6 +34,7 @@ public:
 	~MainWindow();
 
 	void clear();
+	void load();
 
 public slots:
 	void update();
@@ -68,6 +71,8 @@ private slots:
 	void on_blobAdd_clicked();
 
 	void on_blobDelete_clicked();
+
+	void on_actionLoad_triggered();
 
 private:
 	Ui::MainWindow *ui;

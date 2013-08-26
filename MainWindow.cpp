@@ -47,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	blobMapper->addMapping(ui->blobSizeYSpin, 0);
 	blobMapper->toFirst();
 
+	ui->toolBox->setDisabled(true);
+
 	connect(ui->toolBox, SIGNAL(currentChanged(int)), this, SLOT(update()));
 
 	connect(ui->vegetationBox, SIGNAL(currentIndexChanged(int)), vegetationMapper, SLOT(setCurrentIndex(int)));
@@ -62,8 +64,70 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->blobSizeXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->blobSizeYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 
-	baseDir = "/home/michael/work/zwostein-Ununoctium/data/landscape/earth/";
-	config = new QSettings(baseDir+"landscape.ini", QSettings::IniFormat);
+
+
+	/*
+	s.beginGroup( "Terrain" );
+		QString heightMapPath = s.value( "heightMapPath", "height.png" ).toString();
+		mTerrainSize = QVector3D(
+			s.value( "sizeX", 1000.0f ).toFloat(),
+			s.value( "sizeY", 100.0f ).toFloat(),
+			s.value( "sizeZ", 1000.0f ).toFloat()
+		);
+		mTerrainOffset = QVector3D(
+			s.value( "offsetX", -500.0f ).toFloat(),
+			s.value( "offsetY", -50.0f ).toFloat(),
+			s.value( "offsetZ", -500.0f ).toFloat()
+		);
+		QString terrainMaterial = s.value( "material" ).toString();
+		mTerrainMaterialScale = QVector2D(
+			s.value( "materialScaleS", 1.0f ).toFloat(),
+			s.value( "materialScaleT", 1.0f ).toFloat()
+		);
+		int smoothingPasses = s.value( "smoothingPasses", 1 ).toInt();
+	s.endGroup();
+
+	int vegeNum = s.beginReadArray( "Vegetation" );
+		for( int i=0; i<vegeNum; i++ )
+		{
+			s.setArrayIndex( i );
+			QSharedPointer<AObject> f;
+			QString type = s.value("type").toString();
+			if( type == "forest" )
+			{
+				f = QSharedPointer<AObject>( new Forest( this,
+						s.value("model").toString(), s.value("position").toPoint(),
+						s.value("radius").toInt(), s.value("number").toInt() ) );
+			}
+			else if( type == "grass" )
+			{
+				f = QSharedPointer<AObject>( new Grass( this,
+						s.value("model").toString(), s.value("position").toPoint(),
+						s.value("radius").toInt(), s.value("number").toInt() ) );
+			}
+
+			mVegetation.append( f );
+			add( f );
+		}
+	s.endArray();
+	*/
+}
+
+MainWindow::~MainWindow()
+{
+	delete ui;
+	delete graphicsScene;
+	delete config;
+}
+
+void MainWindow::load()
+{
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Landscape-Files (*.ini)"));
+	QFileInfo info(fileName);
+
+	baseDir = info.absolutePath()+"/";
+	qDebug() << baseDir;
+	config = new QSettings(fileName, QSettings::IniFormat);
 
 	config->beginGroup("Terrain");
 		heightMapPath = config->value("heightMapPath").toString();
@@ -138,64 +202,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	graphicsScene->setSceneRect(heightMap.rect());
 	ui->graphicsView->setFixedWidth(heightMap.width());
 
-	setGeometry(0, 0, heightMap.width()+400, heightMap.height()+75);
+	setGeometry(0, 0, heightMap.width()+400, heightMap.height()+100);
 
 	ui->toolBox->setCurrentIndex(0);
+	ui->toolBox->setDisabled(false);
 
 	update();
-
-	/*
-	s.beginGroup( "Terrain" );
-		QString heightMapPath = s.value( "heightMapPath", "height.png" ).toString();
-		mTerrainSize = QVector3D(
-			s.value( "sizeX", 1000.0f ).toFloat(),
-			s.value( "sizeY", 100.0f ).toFloat(),
-			s.value( "sizeZ", 1000.0f ).toFloat()
-		);
-		mTerrainOffset = QVector3D(
-			s.value( "offsetX", -500.0f ).toFloat(),
-			s.value( "offsetY", -50.0f ).toFloat(),
-			s.value( "offsetZ", -500.0f ).toFloat()
-		);
-		QString terrainMaterial = s.value( "material" ).toString();
-		mTerrainMaterialScale = QVector2D(
-			s.value( "materialScaleS", 1.0f ).toFloat(),
-			s.value( "materialScaleT", 1.0f ).toFloat()
-		);
-		int smoothingPasses = s.value( "smoothingPasses", 1 ).toInt();
-	s.endGroup();
-
-	int vegeNum = s.beginReadArray( "Vegetation" );
-		for( int i=0; i<vegeNum; i++ )
-		{
-			s.setArrayIndex( i );
-			QSharedPointer<AObject> f;
-			QString type = s.value("type").toString();
-			if( type == "forest" )
-			{
-				f = QSharedPointer<AObject>( new Forest( this,
-						s.value("model").toString(), s.value("position").toPoint(),
-						s.value("radius").toInt(), s.value("number").toInt() ) );
-			}
-			else if( type == "grass" )
-			{
-				f = QSharedPointer<AObject>( new Grass( this,
-						s.value("model").toString(), s.value("position").toPoint(),
-						s.value("radius").toInt(), s.value("number").toInt() ) );
-			}
-
-			mVegetation.append( f );
-			add( f );
-		}
-	s.endArray();
-	*/
-}
-
-MainWindow::~MainWindow()
-{
-	delete ui;
-	delete graphicsScene;
-	delete config;
 }
 
 void MainWindow::clear()
@@ -440,4 +452,9 @@ void MainWindow::on_blobDelete_clicked()
 	int index = ui->blobBox->currentIndex();
 	blobModel->removeRow(index, QModelIndex());
 	ui->blobBox->setCurrentIndex(index-1);
+}
+
+void MainWindow::on_actionLoad_triggered()
+{
+	load();
 }
