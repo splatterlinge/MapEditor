@@ -13,6 +13,7 @@
 #include <QItemDelegate>
 #include <QVector2D>
 #include <QVector3D>
+#include <QImage>
 #include <QRgb>
 
 #include "VegetationModel.hpp"
@@ -76,6 +77,12 @@ private slots:
 	void on_terrainSizeZSpin_valueChanged(double arg1);
 
 	void on_blobBox_currentIndexChanged(int index);
+
+	void on_blobAdd_clicked();
+
+	void on_blobDelete_clicked();
+
+	void on_toolBox_currentChanged(int index);
 
 private:
 	Ui::MainWindow *ui;

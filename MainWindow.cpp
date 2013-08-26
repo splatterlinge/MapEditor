@@ -120,7 +120,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	graphicsScene->setSceneRect(heightMap.rect());
 	ui->graphicsView->setFixedWidth(heightMap.width());
 
-	setGeometry(0, 0, heightMap.width()+300, heightMap.height()+75);
+	setGeometry(0, 0, heightMap.width()+400, heightMap.height()+75);
+
+	ui->toolBox->setCurrentIndex(0);
 
 	update();
 
@@ -213,23 +215,48 @@ void MainWindow::update()
 	graphicsScene->addLine(px, 0, px, heightMap.height(), QPen(Qt::red, 1, Qt::DotLine));
 	graphicsScene->addLine(0, py, heightMap.width(), py, QPen(Qt::red, 1, Qt::DotLine));
 
-	QList<Vegetation *> list = vegetationModel->getList();
-
-	for(int i=0; i<list.size(); i++)
+	if(ui->toolBox->currentWidget()->objectName() == "blobPage")
 	{
-		Vegetation *v = list.at(i);
+		QList<Blob *> blobList = blobModel->getList();
+		for(int i=0; i<blobList.size(); i++)
+		{
+			if(i == ui->blobBox->currentIndex())
+			{
+				Blob *v = blobList.at(i);
+
+				QImage alpha(baseDir+v->mask);
+				if(!alpha.isNull())
+				{
+					alpha = alpha.scaled(v->rect.width(), v->rect.height());
+					QImage img(alpha.width(), alpha.height(), QImage::Format_ARGB32);
+					img = img.scaled(alpha.width(), alpha.height());
+					img.fill(QColor(255,0,255));
+					img.setAlphaChannel(alpha);
+
+					QGraphicsPixmapItem *item = graphicsScene->addPixmap(QPixmap::fromImage(img));
+					item->setPos(v->rect.topLeft());
+					graphicsScene->addRect(v->rect, QPen(QColor(255,0,255), 2, Qt::DotLine));
+				}
+			}
+		}
+	}
+
+	QList<Vegetation *> vegeList = vegetationModel->getList();
+	for(int i=0; i<vegeList.size(); i++)
+	{
+		Vegetation *v = vegeList.at(i);
 		int x = v->position.x() - v->radius;
 		int y = v->position.y() - v->radius;
 		int w = v->radius * 2;
 		int h = v->radius * 2;
 
 		QBrush color;
-		if(i == ui->vegetationBox->currentIndex())
+		if(ui->toolBox->currentWidget()->objectName() == "vegetationPage" && i == ui->vegetationBox->currentIndex())
 			color = QBrush(QColor(0,255,0,150));
 		else
-			color = QBrush(QColor(0,255,0,20));
+			color = QBrush(QColor(0,255,0,30));
 
-		graphicsScene->addEllipse(x, y, w, h, QPen(Qt::white), color);
+		graphicsScene->addEllipse(x, y, w, h, QPen(Qt::transparent), color);
 	}
 }
 
@@ -408,5 +435,24 @@ void MainWindow::on_terrainSizeZSpin_valueChanged(double value)
 void MainWindow::on_blobBox_currentIndexChanged(int index)
 {
 	blobMapper->setCurrentIndex(index);
+	update();
+}
+
+void MainWindow::on_blobAdd_clicked()
+{
+	int size = blobModel->getList().size();
+	blobModel->addData("", "", 0, 0, QRect());
+	ui->blobBox->setCurrentIndex(size);
+}
+
+void MainWindow::on_blobDelete_clicked()
+{
+	int index = ui->blobBox->currentIndex();
+	blobModel->removeRow(index, QModelIndex());
+	ui->blobBox->setCurrentIndex(index-1);
+}
+
+void MainWindow::on_toolBox_currentChanged(int index)
+{
 	update();
 }

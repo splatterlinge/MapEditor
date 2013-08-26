@@ -90,14 +90,14 @@ void BlobDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, cons
 			v->material = edit->text();
 		return;
 	}
-	if(editor->objectName() == "blobMaterialScaleS")
+	if(editor->objectName() == "blobScaleXSpin")
 	{
 		QDoubleSpinBox * edit = static_cast<QDoubleSpinBox*>(editor);
 		if(edit)
 			v->scaleS = edit->value();
 		return;
 	}
-	if(editor->objectName() == "blobMaterialScaleT")
+	if(editor->objectName() == "blobScaleYSpin")
 	{
 		QDoubleSpinBox * edit = static_cast<QDoubleSpinBox*>(editor);
 		if(edit)
