@@ -19,7 +19,6 @@ void VegetationDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 	}
 	if(editor->objectName() == "vegetationModelEdit")
 	{
-		qDebug() << "bla2";
 		QLineEdit * edit = static_cast<QLineEdit*>(editor);
 		if(edit)
 			edit->setText(v->model);

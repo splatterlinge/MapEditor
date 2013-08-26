@@ -11,6 +11,9 @@
 #include <QAbstractListModel>
 #include <QStandardItemModel>
 #include <QItemDelegate>
+#include <QVector2D>
+#include <QVector3D>
+#include <QRgb>
 
 #include "VegetationModel.hpp"
 
@@ -49,16 +52,27 @@ private slots:
 
 	void on_actionSave_triggered();
 
+	void on_waterHeightSpin_valueChanged(double arg1);
+
 private:
 	Ui::MainWindow *ui;
 
 	QGraphicsScene *graphicsScene;
 
-	QString baseDir;
-	QImage heightMap;
 	QSettings *config;
 
-	QDataWidgetMapper *mapper;
+	QString baseDir;
+
+	QString heightMapPath;
+	QImage heightMap;
+	QString material;
+	QVector2D materialScale;
+	QVector3D offset;
+	QVector3D size;
+
+	double waterHeight;
+
+	QDataWidgetMapper *vegetationMapper;
 	VegetationDelegate *vegetationDelegate;
 	VegetationModel *vegetationModel;
 };
