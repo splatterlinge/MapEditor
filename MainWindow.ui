@@ -37,7 +37,7 @@
     <item row="0" column="1">
      <widget class="QToolBox" name="toolBox">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="terrainPage">
        <property name="geometry">
@@ -45,7 +45,7 @@
          <x>0</x>
          <y>0</y>
          <width>427</width>
-         <height>227</height>
+         <height>200</height>
         </rect>
        </property>
        <attribute name="label">
@@ -193,7 +193,7 @@
          <x>0</x>
          <y>0</y>
          <width>427</width>
-         <height>227</height>
+         <height>200</height>
         </rect>
        </property>
        <attribute name="label">
@@ -240,7 +240,7 @@
          <x>0</x>
          <y>0</y>
          <width>427</width>
-         <height>227</height>
+         <height>200</height>
         </rect>
        </property>
        <attribute name="label">
@@ -355,6 +355,9 @@
         </item>
         <item row="5" column="1">
          <widget class="QSpinBox" name="vegetationRadiusSpin">
+          <property name="minimum">
+           <number>1</number>
+          </property>
           <property name="maximum">
            <number>10000</number>
           </property>
@@ -369,6 +372,9 @@
         </item>
         <item row="6" column="1">
          <widget class="QSpinBox" name="vegetationNumberSpin">
+          <property name="minimum">
+           <number>1</number>
+          </property>
           <property name="maximum">
            <number>10000</number>
           </property>
@@ -388,7 +394,7 @@
          <x>0</x>
          <y>0</y>
          <width>427</width>
-         <height>227</height>
+         <height>200</height>
         </rect>
        </property>
        <attribute name="label">
@@ -555,6 +561,123 @@
         </item>
         <item row="1" column="1">
          <widget class="QComboBox" name="blobMaskBox"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="powerupPage">
+       <attribute name="label">
+        <string>PowerUps</string>
+       </attribute>
+       <layout class="QFormLayout" name="formLayout_5">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>2</number>
+        </property>
+        <item row="1" column="0">
+         <widget class="QLabel" name="powerupTypeLabel">
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="powerupTypeBox">
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="powerupPosLabel">
+          <property name="text">
+           <string>Position</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <layout class="QHBoxLayout" name="powerupPosLayout">
+          <item>
+           <widget class="QSpinBox" name="powerupPosXSpin">
+            <property name="minimum">
+             <number>-10000</number>
+            </property>
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="powerupPosYSpin">
+            <property name="minimum">
+             <number>-10000</number>
+            </property>
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="powerupRadiusLabel">
+          <property name="text">
+           <string>Radius</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="powerupRadiusSpin">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>10000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <layout class="QHBoxLayout" name="powerupBoxLayout">
+          <item>
+           <widget class="QComboBox" name="powerupBox"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="powerupAdd">
+            <property name="maximumSize">
+             <size>
+              <width>30</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>+</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="powerupDelete">
+            <property name="maximumSize">
+             <size>
+              <width>30</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>-</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>

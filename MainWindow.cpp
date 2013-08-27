@@ -51,24 +51,46 @@ MainWindow::MainWindow(QWidget *parent) :
 	blobMapper->addMapping(ui->blobSizeYSpin, 0);
 	blobMapper->toFirst();
 
+	powerupModel = new PowerupModel(this);
+	powerupDelegate = new PowerupDelegate(this);
+	ui->powerupBox->setItemDelegate(powerupDelegate);
+	ui->powerupBox->setModel(powerupModel);
+
+	powerupMapper = new QDataWidgetMapper(this);
+	powerupMapper->setModel(powerupModel);
+	powerupMapper->setItemDelegate(powerupDelegate);
+	powerupMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
+	powerupMapper->addMapping(ui->powerupTypeBox, 0);
+	powerupMapper->addMapping(ui->powerupPosXSpin, 0);
+	powerupMapper->addMapping(ui->powerupPosYSpin, 0);
+	powerupMapper->addMapping(ui->powerupRadiusSpin, 0);
+	powerupMapper->toFirst();
+
 	ui->toolBox->setDisabled(true);
 
 	connect(ui->toolBox, SIGNAL(currentChanged(int)), this, SLOT(update()));
 
 	connect(ui->vegetationBox, SIGNAL(currentIndexChanged(int)), vegetationMapper, SLOT(setCurrentIndex(int)));
-	connect(ui->vegetationBox, SIGNAL(highlighted(int)), vegetationMapper, SLOT(setCurrentIndex(int)));
+	connect(ui->vegetationBox, SIGNAL(highlighted(int)), ui->vegetationBox, SLOT(setCurrentIndex(int)));
 	connect(ui->vegetationPositionXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->vegetationPositionYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->vegetationRadiusSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->vegetationNumberSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 
 	connect(ui->blobBox, SIGNAL(currentIndexChanged(int)), blobMapper, SLOT(setCurrentIndex(int)));
-	connect(ui->blobBox, SIGNAL(highlighted(int)), blobMapper, SLOT(setCurrentIndex(int)));
+	connect(ui->blobBox, SIGNAL(highlighted(int)), ui->blobBox, SLOT(setCurrentIndex(int)));
 	connect(ui->blobMaskBox, SIGNAL(currentTextChanged(QString)), this, SLOT(update()));
 	connect(ui->blobPositionXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->blobPositionYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->blobSizeXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->blobSizeYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
+
+	connect(ui->powerupBox, SIGNAL(currentIndexChanged(int)), powerupMapper, SLOT(setCurrentIndex(int)));
+	connect(ui->powerupBox, SIGNAL(highlighted(int)), ui->powerupBox, SLOT(setCurrentIndex(int)));
+	connect(ui->powerupTypeBox, SIGNAL(currentTextChanged(QString)), this, SLOT(update()));
+	connect(ui->powerupPosXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
+	connect(ui->powerupPosYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
+	connect(ui->powerupRadiusSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 }
 
 MainWindow::~MainWindow()
@@ -181,6 +203,21 @@ void MainWindow::load()
 	config->endArray();
 	ui->blobBox->setCurrentIndex(0);
 
+	int powerNum = config->beginReadArray("PowerUp");
+		for( int i=0; i<powerNum; i++ )
+		{
+			config->setArrayIndex( i );
+
+			qDebug() << config->value("type").toString();
+			powerupModel->addData(
+						config->value("type").toString(),
+						config->value("position").toPoint(),
+						config->value("radius").toInt()
+						);
+		}
+	config->endArray();
+	ui->powerupBox->setCurrentIndex(0);
+
 	graphicsScene->setSceneRect(heightMap.rect());
 	ui->graphicsView->setFixedWidth(heightMap.width());
 
@@ -222,10 +259,12 @@ void MainWindow::update()
 
 	graphicsScene->addPixmap(QPixmap::fromImage(img));
 
-	int px = -offset.x() * heightMap.width() / size.x();
-	int py = -offset.z() * heightMap.height() / size.z();
-	graphicsScene->addLine(px, 0, px, heightMap.height(), QPen(Qt::red, 1, Qt::DotLine));
-	graphicsScene->addLine(0, py, heightMap.width(), py, QPen(Qt::red, 1, Qt::DotLine));
+	float px = heightMap.width() / size.x();
+	float py = heightMap.height() / size.z();
+	int hx = -offset.x() * px;
+	int hy = -offset.z() * py;
+	graphicsScene->addLine(hx, 0, hx, heightMap.height(), QPen(Qt::red, 1, Qt::DotLine));
+	graphicsScene->addLine(0, hy, heightMap.width(), hy, QPen(Qt::red, 1, Qt::DotLine));
 
 	if(ui->toolBox->currentWidget()->objectName() == "blobPage")
 	{
@@ -290,6 +329,33 @@ void MainWindow::update()
 
 		graphicsScene->addEllipse(x, y, w, h, QPen(Qt::transparent), color);
 	}
+
+	QList<Powerup *> powerupList = powerupModel->getList();
+	for(int i=0; i<powerupList.size(); i++)
+	{
+		Powerup *v = powerupList.at(i);
+		int x = hx + (v->pos.x() - v->radius)*px;
+		int y = hy + (v->pos.y() - v->radius)*py;
+		int w = (v->radius * 2)*px;
+
+		QBrush color;
+		if(ui->toolBox->currentWidget()->objectName() == "powerupPage")
+		{
+			if(i == ui->powerupBox->currentIndex())
+			{
+				x = hx + (ui->powerupPosXSpin->value() - ui->powerupRadiusSpin->value())*px;
+				y = hy + (ui->powerupPosYSpin->value() - ui->powerupRadiusSpin->value())*py;
+				w = (ui->powerupRadiusSpin->value() * 2)*py;
+				color = QBrush(QColor(255,255,255,150));
+			}
+			else
+			{
+				color = QBrush(QColor(255,255,255,30));
+			}
+
+			graphicsScene->addEllipse(x, y, w, w, QPen(QColor(255,255,255,127), 1, Qt::DashLine), color);
+		}
+	}
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -345,6 +411,19 @@ void MainWindow::on_actionSave_triggered()
 			config->setValue("rect", v->rect);
 		}
 		config->endArray();
+
+		config->remove("PowerUp");
+		int powerSize = powerupModel->getList().size();
+		config->beginWriteArray("PowerUp", powerSize);
+		for(int i=0; i<powerSize; i++)
+		{
+			Powerup *v = powerupModel->getList().at(i);
+			config->setArrayIndex(i);
+			config->setValue("type", v->type);
+			config->setValue("position", v->pos);
+			config->setValue("radius", v->radius);
+		}
+		config->endArray();
 	}
 }
 
@@ -352,6 +431,8 @@ void MainWindow::on_vegetationAdd_clicked()
 {
 	int size = vegetationModel->getList().size();
 	vegetationModel->addData("", "", QPoint(0,0), 0, 0);
+	ui->vegetationBox->clear();
+	ui->vegetationBox->setModel(vegetationModel);
 	ui->vegetationBox->setCurrentIndex(size);
 }
 

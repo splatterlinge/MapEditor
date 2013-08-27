@@ -24,6 +24,7 @@
 
 #include "VegetationModel.hpp"
 #include "BlobModel.hpp"
+#include "PowerupModel.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -107,6 +108,10 @@ private:
 	QDataWidgetMapper *blobMapper;
 	BlobDelegate *blobDelegate;
 	BlobModel *blobModel;
+
+	QDataWidgetMapper *powerupMapper;
+	PowerupDelegate *powerupDelegate;
+	PowerupModel *powerupModel;
 };
 
 #endif // MAINWINDOW_HPP

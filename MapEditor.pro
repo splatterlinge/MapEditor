@@ -15,10 +15,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         MainWindow.cpp \
     VegetationModel.cpp \
-    BlobModel.cpp
+    BlobModel.cpp \
+    PowerupModel.cpp
 
 HEADERS  += MainWindow.hpp \
     VegetationModel.hpp \
-    BlobModel.hpp
+    BlobModel.hpp \
+    PowerupModel.hpp
 
 FORMS    += MainWindow.ui
