@@ -69,52 +69,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->blobPositionYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->blobSizeXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->blobSizeYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
-
-	/*
-	s.beginGroup( "Terrain" );
-		QString heightMapPath = s.value( "heightMapPath", "height.png" ).toString();
-		mTerrainSize = QVector3D(
-			s.value( "sizeX", 1000.0f ).toFloat(),
-			s.value( "sizeY", 100.0f ).toFloat(),
-			s.value( "sizeZ", 1000.0f ).toFloat()
-		);
-		mTerrainOffset = QVector3D(
-			s.value( "offsetX", -500.0f ).toFloat(),
-			s.value( "offsetY", -50.0f ).toFloat(),
-			s.value( "offsetZ", -500.0f ).toFloat()
-		);
-		QString terrainMaterial = s.value( "material" ).toString();
-		mTerrainMaterialScale = QVector2D(
-			s.value( "materialScaleS", 1.0f ).toFloat(),
-			s.value( "materialScaleT", 1.0f ).toFloat()
-		);
-		int smoothingPasses = s.value( "smoothingPasses", 1 ).toInt();
-	s.endGroup();
-
-	int vegeNum = s.beginReadArray( "Vegetation" );
-		for( int i=0; i<vegeNum; i++ )
-		{
-			s.setArrayIndex( i );
-			QSharedPointer<AObject> f;
-			QString type = s.value("type").toString();
-			if( type == "forest" )
-			{
-				f = QSharedPointer<AObject>( new Forest( this,
-						s.value("model").toString(), s.value("position").toPoint(),
-						s.value("radius").toInt(), s.value("number").toInt() ) );
-			}
-			else if( type == "grass" )
-			{
-				f = QSharedPointer<AObject>( new Grass( this,
-						s.value("model").toString(), s.value("position").toPoint(),
-						s.value("radius").toInt(), s.value("number").toInt() ) );
-			}
-
-			mVegetation.append( f );
-			add( f );
-		}
-	s.endArray();
-	*/
 }
 
 MainWindow::~MainWindow()
