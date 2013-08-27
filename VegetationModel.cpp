@@ -22,7 +22,7 @@ void VegetationDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 	{
 		QComboBox * edit = static_cast<QComboBox*>(editor);
 		if(edit)
-			edit->setCurrentText(v->model);
+			edit->setCurrentIndex(edit->findText(v->model));
 		return;
 	}
 	if(editor->objectName() == "vegetationPositionXSpin")

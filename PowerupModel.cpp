@@ -16,7 +16,7 @@ void PowerupDelegate::setEditorData(QWidget *editor, const QModelIndex &index) c
 		QComboBox * edit = static_cast<QComboBox*>(editor);
 		if(edit)
 		{
-			edit->setCurrentText(v->type);
+			edit->setCurrentIndex(edit->findText(v->type));
 		}
 		return;
 	}

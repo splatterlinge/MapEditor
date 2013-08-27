@@ -145,7 +145,7 @@ void MainWindow::load()
 
 	config->beginGroup("Terrain");
 		material = config->value("material").toString();
-		ui->terrainMaterialBox->setCurrentText(material);
+		ui->terrainMaterialBox->setCurrentIndex(ui->terrainMaterialBox->findText(material));
 		materialScale = QVector2D(
 							config->value("materialScaleS").toFloat(),
 							config->value("materialScaleT").toFloat()

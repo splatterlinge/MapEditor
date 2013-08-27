@@ -17,7 +17,7 @@ void BlobDelegate::setEditorData(QWidget *editor, const QModelIndex &index) cons
 		QComboBox * edit = static_cast<QComboBox*>(editor);
 		if(edit)
 		{
-			edit->setCurrentText(v->mask);
+			edit->setCurrentIndex(edit->findText(v->mask));
 		}
 		return;
 	}
@@ -25,7 +25,7 @@ void BlobDelegate::setEditorData(QWidget *editor, const QModelIndex &index) cons
 	{
 		QComboBox * edit = static_cast<QComboBox*>(editor);
 		if(edit)
-			edit->setCurrentText(v->material);
+			edit->setCurrentIndex(edit->findText(v->material));
 		return;
 	}
 	if(editor->objectName() == "blobScaleXSpin")
