@@ -120,7 +120,9 @@ QVariant VegetationModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 
 	if(role == Qt::DisplayRole)
+	{
 		return items.at(index.row())->toString();
+	}
 
 	if(role == Qt::EditRole)
 		return QVariant::fromValue(items.at(index.row()));

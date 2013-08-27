@@ -2,6 +2,7 @@
 #define LISTMODEL_HPP
 
 #include <QDebug>
+#include <QApplication>
 #include <QVariant>
 #include <QAbstractListModel>
 #include <QList>

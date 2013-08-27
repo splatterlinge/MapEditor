@@ -17,13 +17,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->graphicsView->setScene(graphicsScene);
 
 	vegetationModel = new VegetationModel();
-	vegetationDelegate = new VegetationDelegate();
-	ui->vegetationBox->setItemDelegate(vegetationDelegate);
 	ui->vegetationBox->setModel(vegetationModel);
 
 	vegetationMapper = new QDataWidgetMapper();
 	vegetationMapper->setModel(vegetationModel);
-	vegetationMapper->setItemDelegate(vegetationDelegate);
+	vegetationMapper->setItemDelegate(new VegetationDelegate());
 	vegetationMapper->addMapping(ui->vegetationTypeEdit, 0);
 	vegetationMapper->addMapping(ui->vegetationModelBox, 0);
 	vegetationMapper->addMapping(ui->vegetationPositionXSpin, 0);
@@ -33,13 +31,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	vegetationMapper->toFirst();
 
 	blobModel = new BlobModel(this);
-	blobDelegate = new BlobDelegate(this);
-	ui->blobBox->setItemDelegate(blobDelegate);
 	ui->blobBox->setModel(blobModel);
 
 	blobMapper = new QDataWidgetMapper(this);
 	blobMapper->setModel(blobModel);
-	blobMapper->setItemDelegate(blobDelegate);
+	blobMapper->setItemDelegate(new BlobDelegate(this));
 	blobMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 	blobMapper->addMapping(ui->blobMaskBox, 0);
 	blobMapper->addMapping(ui->blobMaterialBox, 0);
@@ -52,13 +48,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	blobMapper->toFirst();
 
 	powerupModel = new PowerupModel(this);
-	powerupDelegate = new PowerupDelegate(this);
-	ui->powerupBox->setItemDelegate(powerupDelegate);
 	ui->powerupBox->setModel(powerupModel);
 
 	powerupMapper = new QDataWidgetMapper(this);
 	powerupMapper->setModel(powerupModel);
-	powerupMapper->setItemDelegate(powerupDelegate);
+	powerupMapper->setItemDelegate(new PowerupDelegate(this));
 	powerupMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 	powerupMapper->addMapping(ui->powerupTypeBox, 0);
 	powerupMapper->addMapping(ui->powerupPosXSpin, 0);
@@ -98,6 +92,11 @@ MainWindow::~MainWindow()
 	delete ui;
 	delete graphicsScene;
 	delete config;
+}
+
+void MainWindow::on_actionLoad_triggered()
+{
+	load();
 }
 
 void MainWindow::load()
@@ -427,22 +426,6 @@ void MainWindow::on_actionSave_triggered()
 	}
 }
 
-void MainWindow::on_vegetationAdd_clicked()
-{
-	int size = vegetationModel->getList().size();
-	vegetationModel->addData("", "", QPoint(0,0), 0, 0);
-	ui->vegetationBox->clear();
-	ui->vegetationBox->setModel(vegetationModel);
-	ui->vegetationBox->setCurrentIndex(size);
-}
-
-void MainWindow::on_vegetationDelete_clicked()
-{
-	int index = ui->vegetationBox->currentIndex();
-	vegetationModel->removeRow(index, QModelIndex());
-	ui->vegetationBox->setCurrentIndex(index-1);
-}
-
 void MainWindow::on_waterHeightSpin_valueChanged(double value)
 {
 	waterHeight = value;
@@ -509,11 +492,25 @@ void MainWindow::on_terrainSizeZSpin_valueChanged(double value)
 	update();
 }
 
+void MainWindow::on_vegetationAdd_clicked()
+{
+	int index = vegetationModel->getList().size();
+	vegetationModel->addData("", "", QPoint(0,0), 0, 0);
+	ui->vegetationBox->setCurrentIndex(0);
+}
+
+void MainWindow::on_vegetationDelete_clicked()
+{
+	int index = ui->vegetationBox->currentIndex();
+	vegetationModel->removeRow(index, QModelIndex());
+	ui->vegetationBox->setCurrentIndex(index-1);
+}
+
 void MainWindow::on_blobAdd_clicked()
 {
-	int size = blobModel->getList().size();
+	int index = blobModel->getList().size();
 	blobModel->addData("", "", 0, 0, QRect());
-	ui->blobBox->setCurrentIndex(size);
+	ui->blobBox->setCurrentIndex(index);
 }
 
 void MainWindow::on_blobDelete_clicked()
@@ -521,9 +518,4 @@ void MainWindow::on_blobDelete_clicked()
 	int index = ui->blobBox->currentIndex();
 	blobModel->removeRow(index, QModelIndex());
 	ui->blobBox->setCurrentIndex(index-1);
-}
-
-void MainWindow::on_actionLoad_triggered()
-{
-	load();
 }
