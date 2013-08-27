@@ -3,6 +3,7 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include <QComboBox>
 
 void BlobDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
@@ -11,18 +12,20 @@ void BlobDelegate::setEditorData(QWidget *editor, const QModelIndex &index) cons
 
 	Blob *v = index.data(Qt::EditRole).value<Blob *>();
 
-	if(editor->objectName() == "blobMaskEdit")
+	if(editor->objectName() == "blobMaskBox")
 	{
-		QLineEdit * edit = static_cast<QLineEdit*>(editor);
+		QComboBox * edit = static_cast<QComboBox*>(editor);
 		if(edit)
-			edit->setText(v->mask);
+		{
+			edit->setCurrentText(v->mask);
+		}
 		return;
 	}
-	if(editor->objectName() == "blobMaterialEdit")
+	if(editor->objectName() == "blobMaterialBox")
 	{
-		QLineEdit * edit = static_cast<QLineEdit*>(editor);
+		QComboBox * edit = static_cast<QComboBox*>(editor);
 		if(edit)
-			edit->setText(v->material);
+			edit->setCurrentText(v->material);
 		return;
 	}
 	if(editor->objectName() == "blobScaleXSpin")
@@ -76,18 +79,18 @@ void BlobDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, cons
 
 	Blob *v = model->data(index, Qt::EditRole).value<Blob *>();
 
-	if(editor->objectName() == "blobMaskEdit")
+	if(editor->objectName() == "blobMaskBox")
 	{
-		QLineEdit * edit = static_cast<QLineEdit*>(editor);
+		QComboBox * edit = static_cast<QComboBox*>(editor);
 		if(edit)
-			v->mask = edit->text();
+			v->mask = edit->currentText();
 		return;
 	}
-	if(editor->objectName() == "blobMaterialEdit")
+	if(editor->objectName() == "blobMaterialBox")
 	{
-		QLineEdit * edit = static_cast<QLineEdit*>(editor);
+		QComboBox * edit = static_cast<QComboBox*>(editor);
 		if(edit)
-			v->material = edit->text();
+			v->material = edit->currentText();
 	}
 	if(editor->objectName() == "blobScaleXSpin")
 	{

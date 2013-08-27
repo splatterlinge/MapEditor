@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	config = new QSettings();
 
+	statusLabel = new QLabel();
+	ui->statusBar->addWidget(statusLabel);
 	graphicsScene = new QGraphicsScene(ui->graphicsView);
 	ui->graphicsView->setScene(graphicsScene);
 
@@ -23,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	vegetationMapper->setModel(vegetationModel);
 	vegetationMapper->setItemDelegate(vegetationDelegate);
 	vegetationMapper->addMapping(ui->vegetationTypeEdit, 0);
-	vegetationMapper->addMapping(ui->vegetationModelEdit, 0);
+	vegetationMapper->addMapping(ui->vegetationModelBox, 0);
 	vegetationMapper->addMapping(ui->vegetationPositionXSpin, 0);
 	vegetationMapper->addMapping(ui->vegetationPositionYSpin, 0);
 	vegetationMapper->addMapping(ui->vegetationRadiusSpin, 0);
@@ -39,8 +41,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	blobMapper->setModel(blobModel);
 	blobMapper->setItemDelegate(blobDelegate);
 	blobMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
-	blobMapper->addMapping(ui->blobMaskEdit, 0);
-	blobMapper->addMapping(ui->blobMaterialEdit, 0);
+	blobMapper->addMapping(ui->blobMaskBox, 0);
+	blobMapper->addMapping(ui->blobMaterialBox, 0);
 	blobMapper->addMapping(ui->blobScaleXSpin, 0);
 	blobMapper->addMapping(ui->blobScaleYSpin, 0);
 	blobMapper->addMapping(ui->blobPositionXSpin, 0);
@@ -54,13 +56,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->toolBox, SIGNAL(currentChanged(int)), this, SLOT(update()));
 
 	connect(ui->vegetationBox, SIGNAL(currentIndexChanged(int)), vegetationMapper, SLOT(setCurrentIndex(int)));
+	connect(ui->vegetationBox, SIGNAL(highlighted(int)), vegetationMapper, SLOT(setCurrentIndex(int)));
 	connect(ui->vegetationPositionXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->vegetationPositionYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->vegetationRadiusSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->vegetationNumberSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 
 	connect(ui->blobBox, SIGNAL(currentIndexChanged(int)), blobMapper, SLOT(setCurrentIndex(int)));
-	connect(ui->blobMaskEdit, SIGNAL(textChanged(QString)), this, SLOT(update()));
+	connect(ui->blobBox, SIGNAL(highlighted(int)), blobMapper, SLOT(setCurrentIndex(int)));
+	connect(ui->blobMaskBox, SIGNAL(currentTextChanged(QString)), this, SLOT(update()));
 	connect(ui->blobPositionXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->blobPositionYSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
 	connect(ui->blobSizeXSpin, SIGNAL(valueChanged(int)), this, SLOT(update()));
@@ -127,15 +131,39 @@ void MainWindow::load()
 
 	baseDir = info.absolutePath()+"/";
 	qDebug() << baseDir;
+
 	config = new QSettings(fileName, QSettings::IniFormat);
 
 	config->beginGroup("Terrain");
 		heightMapPath = config->value("heightMapPath").toString();
 		ui->terrainHeightMapEdit->setText(heightMapPath);
 		heightMap = QImage( baseDir+heightMapPath );
+	config->endGroup();
 
+	QDir l(baseDir);
+	foreach(QFileInfo f, l.entryInfoList(QDir::Files))
+		if(f.fileName() != heightMapPath && f.fileName() != info.fileName())
+			masks.append(f.fileName());
+	ui->blobMaskBox->addItems(masks);
+
+	QDir m(baseDir+"../../model");
+	foreach(QFileInfo f, m.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot))
+		models.append(f.fileName());
+	ui->vegetationModelBox->addItems(models);
+
+	QDir n(baseDir+"../../material");
+	foreach(QFileInfo f, n.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot))
+		materials.append(f.fileName());
+	ui->terrainMaterialBox->addItems(materials);
+	ui->blobMaterialBox->addItems(materials);
+
+	qDebug() << masks;
+	qDebug() << models;
+	qDebug() << materials;
+
+	config->beginGroup("Terrain");
 		material = config->value("material").toString();
-		ui->terrainMaterialEdit->setText(material);
+		ui->terrainMaterialBox->setCurrentText(material);
 		materialScale = QVector2D(
 							config->value("materialScaleS").toFloat(),
 							config->value("materialScaleT").toFloat()
@@ -254,7 +282,7 @@ void MainWindow::update()
 			{
 				Blob *v = blobList.at(i);
 
-				QImage alpha(baseDir+ui->blobMaskEdit->text());
+				QImage alpha(baseDir+ui->blobMaskBox->currentText());
 				if(!alpha.isNull())
 				{
 					alpha = alpha.scaled(ui->blobSizeXSpin->value(), ui->blobSizeYSpin->value());
@@ -312,6 +340,9 @@ void MainWindow::update()
 
 void MainWindow::on_actionSave_triggered()
 {
+	vegetationMapper->submit();
+	blobMapper->submit();
+
 	if(config->isWritable())
 	{
 		config->beginGroup("Terrain");
@@ -389,7 +420,7 @@ void MainWindow::on_terrainHeightMapEdit_textChanged(const QString &text)
 	update();
 }
 
-void MainWindow::on_terrainMaterialEdit_textChanged(const QString &text)
+void MainWindow::on_terrainMaterialBox_currentIndexChanged(const QString &text)
 {
 	material = text;
 	update();

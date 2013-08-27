@@ -2,6 +2,7 @@
 
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QComboBox>
 
 void VegetationDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
@@ -17,11 +18,11 @@ void VegetationDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 			edit->setText(v->type);
 		return;
 	}
-	if(editor->objectName() == "vegetationModelEdit")
+	if(editor->objectName() == "vegetationModelBox")
 	{
-		QLineEdit * edit = static_cast<QLineEdit*>(editor);
+		QComboBox * edit = static_cast<QComboBox*>(editor);
 		if(edit)
-			edit->setText(v->model);
+			edit->setCurrentText(v->model);
 		return;
 	}
 	if(editor->objectName() == "vegetationPositionXSpin")
@@ -60,7 +61,6 @@ void VegetationDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 		return;
 
 	Vegetation *v = model->data(index, Qt::EditRole).value<Vegetation *>();
-	//Vegetation *v = index.data(Qt::EditRole).value<Vegetation *>();
 
 	if(editor->objectName() == "vegetationTypeEdit")
 	{
@@ -69,11 +69,11 @@ void VegetationDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 			v->type = edit->text();
 		return;
 	}
-	if(editor->objectName() == "vegetationModelEdit")
+	if(editor->objectName() == "vegetationModelBox")
 	{
-		QLineEdit * edit = static_cast<QLineEdit*>(editor);
+		QComboBox * edit = static_cast<QComboBox*>(editor);
 		if(edit)
-			v->model = edit->text();
+			v->model = edit->currentText();
 		return;
 	}
 	if(editor->objectName() == "vegetationPositionXSpin")

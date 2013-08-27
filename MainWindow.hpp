@@ -17,6 +17,9 @@
 #include <QRgb>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QStringList>
+#include <QDir>
+#include <QLabel>
 #include <qmath.h>
 
 #include "VegetationModel.hpp"
@@ -50,7 +53,7 @@ private slots:
 
 	void on_terrainHeightMapEdit_textChanged(const QString &arg1);
 
-	void on_terrainMaterialEdit_textChanged(const QString &arg1);
+	void on_terrainMaterialBox_currentIndexChanged(const QString &arg1);
 
 	void on_terrainScaleSSpin_valueChanged(double arg1);
 
@@ -77,11 +80,16 @@ private slots:
 private:
 	Ui::MainWindow *ui;
 
+	QLabel *statusLabel;
 	QGraphicsScene *graphicsScene;
 
 	QSettings *config;
 
 	QString baseDir;
+
+	QStringList masks;
+	QStringList models;
+	QStringList materials;
 
 	QString heightMapPath;
 	QImage heightMap;

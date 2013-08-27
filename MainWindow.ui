@@ -40,6 +40,14 @@
        <number>3</number>
       </property>
       <widget class="QWidget" name="terrainPage">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>427</width>
+         <height>227</height>
+        </rect>
+       </property>
        <attribute name="label">
         <string>Terrain</string>
        </attribute>
@@ -75,9 +83,6 @@
            <string>Material</string>
           </property>
          </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="terrainMaterialEdit"/>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="terrainScaleLabel">
@@ -176,6 +181,9 @@
            </widget>
           </item>
          </layout>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="terrainMaterialBox"/>
         </item>
        </layout>
       </widget>
@@ -313,9 +321,6 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
-         <widget class="QLineEdit" name="vegetationModelEdit"/>
-        </item>
         <item row="4" column="0">
          <widget class="QLabel" name="vegetationPositionLabel">
           <property name="text">
@@ -372,9 +377,20 @@
         <item row="2" column="1">
          <widget class="QLineEdit" name="vegetationTypeEdit"/>
         </item>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="vegetationModelBox"/>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="blobPage">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>427</width>
+         <height>227</height>
+        </rect>
+       </property>
        <attribute name="label">
         <string>Blobs</string>
        </attribute>
@@ -441,32 +457,15 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="blobMaterialBox"/>
+        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="blobScaleLabel">
           <property name="text">
            <string>Scale</string>
           </property>
          </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="blobPositionLabel">
-          <property name="text">
-           <string>Position</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="blobSizeLabel">
-          <property name="text">
-           <string>Size</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="blobMaskEdit"/>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="blobMaterialEdit"/>
         </item>
         <item row="3" column="1">
          <layout class="QHBoxLayout" name="blobScaleLayout">
@@ -492,6 +491,13 @@
           </item>
          </layout>
         </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="blobPositionLabel">
+          <property name="text">
+           <string>Position</string>
+          </property>
+         </widget>
+        </item>
         <item row="4" column="1">
          <layout class="QHBoxLayout" name="blobPositionLayout">
           <item>
@@ -516,6 +522,13 @@
           </item>
          </layout>
         </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="blobSizeLabel">
+          <property name="text">
+           <string>Size</string>
+          </property>
+         </widget>
+        </item>
         <item row="5" column="1">
          <layout class="QHBoxLayout" name="blobSizeLayout">
           <item>
@@ -539,6 +552,9 @@
            </widget>
           </item>
          </layout>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="blobMaskBox"/>
         </item>
        </layout>
       </widget>
@@ -591,7 +607,6 @@
   <tabstop>vegetationAdd</tabstop>
   <tabstop>vegetationDelete</tabstop>
   <tabstop>vegetationTypeEdit</tabstop>
-  <tabstop>vegetationModelEdit</tabstop>
   <tabstop>vegetationPositionXSpin</tabstop>
   <tabstop>vegetationPositionYSpin</tabstop>
   <tabstop>vegetationRadiusSpin</tabstop>
