@@ -16,11 +16,13 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     VegetationModel.cpp \
     BlobModel.cpp \
-    PowerupModel.cpp
+    PowerupModel.cpp \
+    Utility.cpp
 
 HEADERS  += MainWindow.hpp \
     VegetationModel.hpp \
     BlobModel.hpp \
-    PowerupModel.hpp
+    PowerupModel.hpp \
+    Utility.hpp
 
 FORMS    += MainWindow.ui

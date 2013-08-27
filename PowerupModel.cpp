@@ -84,6 +84,8 @@ void PowerupDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, c
 
 int PowerupModel::rowCount(const QModelIndex &parent) const
 {
+	Q_UNUSED(parent);
+
 	return items.count();
 }
 
@@ -116,5 +118,9 @@ void PowerupModel::addData(QString type, QPoint pos, int radius)
 
 bool PowerupModel::removeRow(int row, const QModelIndex &parent)
 {
+	Q_UNUSED(parent);
+
 	items.removeAt(row);
+
+	return true;
 }

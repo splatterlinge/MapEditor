@@ -1,13 +1,11 @@
 #ifndef LISTMODEL_HPP
 #define LISTMODEL_HPP
 
-#include <QDebug>
-#include <QApplication>
-#include <QVariant>
 #include <QAbstractListModel>
+#include <QItemDelegate>
+#include <QListView>
 #include <QList>
 #include <QPoint>
-#include <QItemDelegate>
 
 class Vegetation
 {

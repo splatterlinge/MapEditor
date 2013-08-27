@@ -1,6 +1,7 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
 
+#include <QListView>
 #include <QDoubleSpinBox>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -18,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	vegetationModel = new VegetationModel();
 	ui->vegetationBox->setModel(vegetationModel);
+	QListView * view = static_cast<QListView *>(ui->vegetationBox->view());
+	view->setResizeMode(QListView::Adjust);
 
 	vegetationMapper = new QDataWidgetMapper();
 	vegetationMapper->setModel(vegetationModel);
@@ -30,12 +33,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	vegetationMapper->addMapping(ui->vegetationNumberSpin, 0);
 	vegetationMapper->toFirst();
 
-	blobModel = new BlobModel(this);
+	blobModel = new BlobModel();
 	ui->blobBox->setModel(blobModel);
+	view = static_cast<QListView *>(ui->blobBox->view());
+	view->setResizeMode(QListView::Adjust);
 
-	blobMapper = new QDataWidgetMapper(this);
+	blobMapper = new QDataWidgetMapper();
 	blobMapper->setModel(blobModel);
-	blobMapper->setItemDelegate(new BlobDelegate(this));
+	blobMapper->setItemDelegate(new BlobDelegate());
 	blobMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 	blobMapper->addMapping(ui->blobMaskBox, 0);
 	blobMapper->addMapping(ui->blobMaterialBox, 0);
@@ -47,12 +52,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	blobMapper->addMapping(ui->blobSizeYSpin, 0);
 	blobMapper->toFirst();
 
-	powerupModel = new PowerupModel(this);
+	powerupModel = new PowerupModel();
 	ui->powerupBox->setModel(powerupModel);
+	view = static_cast<QListView *>(ui->powerupBox->view());
+	view->setResizeMode(QListView::Adjust);
 
-	powerupMapper = new QDataWidgetMapper(this);
+	powerupMapper = new QDataWidgetMapper();
 	powerupMapper->setModel(powerupModel);
-	powerupMapper->setItemDelegate(new PowerupDelegate(this));
+	powerupMapper->setItemDelegate(new PowerupDelegate());
 	powerupMapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 	powerupMapper->addMapping(ui->powerupTypeBox, 0);
 	powerupMapper->addMapping(ui->powerupPosXSpin, 0);
@@ -496,7 +503,7 @@ void MainWindow::on_vegetationAdd_clicked()
 {
 	int index = vegetationModel->getList().size();
 	vegetationModel->addData("", "", QPoint(0,0), 0, 0);
-	ui->vegetationBox->setCurrentIndex(0);
+	ui->vegetationBox->setCurrentIndex(index);
 }
 
 void MainWindow::on_vegetationDelete_clicked()

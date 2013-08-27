@@ -138,6 +138,8 @@ void BlobDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, cons
 
 int BlobModel::rowCount(const QModelIndex &parent) const
 {
+	Q_UNUSED(parent);
+
 	return items.count();
 }
 
@@ -172,6 +174,10 @@ void BlobModel::addData(QString mask, QString material, double scaleS, double sc
 
 bool BlobModel::removeRow(int row, const QModelIndex &parent)
 {
+	Q_UNUSED(parent);
+
 	items.removeAt(row);
+
+	return true;
 }
 

@@ -2,6 +2,8 @@
 #define MAINWINDOW_HPP
 
 #include <QDebug>
+#include <QApplication>
+#include <QVariant>
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsItem>

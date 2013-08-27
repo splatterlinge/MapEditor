@@ -108,6 +108,8 @@ void VegetationDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 
 int VegetationModel::rowCount(const QModelIndex &parent) const
 {
+	Q_UNUSED(parent);
+
 	return items.count();
 }
 
@@ -120,9 +122,7 @@ QVariant VegetationModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 
 	if(role == Qt::DisplayRole)
-	{
 		return items.at(index.row())->toString();
-	}
 
 	if(role == Qt::EditRole)
 		return QVariant::fromValue(items.at(index.row()));
@@ -144,5 +144,9 @@ void VegetationModel::addData(QString type, QString model, QPoint position, int 
 
 bool VegetationModel::removeRow(int row, const QModelIndex &parent)
 {
+	Q_UNUSED(parent);
+
 	items.removeAt(row);
+
+	return true;
 }

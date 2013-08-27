@@ -5,6 +5,7 @@
 #include <QVariant>
 #include <QAbstractListModel>
 #include <QItemDelegate>
+#include <QListView>
 #include <QList>
 #include <QRect>
 
@@ -26,8 +27,6 @@ class BlobDelegate : public QItemDelegate
 {
 	Q_OBJECT
 public:
-	explicit BlobDelegate(QObject * parent = 0) : QItemDelegate(parent) {}
-
 	void setEditorData(QWidget *editor, const QModelIndex &index) const;
 	void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 };
@@ -36,8 +35,6 @@ class BlobModel : public QAbstractListModel
 {
 	Q_OBJECT
 public:
-	explicit BlobModel(QObject * parent = 0) : QAbstractListModel(parent) {}
-
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
