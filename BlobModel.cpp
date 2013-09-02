@@ -4,6 +4,7 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QComboBox>
+#include <QSlider>
 
 void BlobDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
@@ -70,6 +71,13 @@ void BlobDelegate::setEditorData(QWidget *editor, const QModelIndex &index) cons
 			edit->setValue(v->rect.height());
 		return;
 	}
+	if(editor->objectName() == "blobPrioritySlider")
+	{
+		QSlider * edit = static_cast<QSlider*>(editor);
+		if(edit)
+			edit->setValue(v->priority);
+		return;
+	}
 }
 
 void BlobDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
@@ -134,6 +142,13 @@ void BlobDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, cons
 			v->rect.setHeight(edit->value());
 		return;
 	}
+	if(editor->objectName() == "blobPrioritySlider")
+	{
+		QSlider * edit = static_cast<QSlider*>(editor);
+		if(edit)
+			v->priority = edit->value();
+		return;
+	}
 }
 
 int BlobModel::rowCount(const QModelIndex &parent) const
@@ -160,7 +175,7 @@ QVariant BlobModel::data(const QModelIndex &index, int role) const
 	return QVariant();
 }
 
-void BlobModel::addData(QString mask, QString material, double scaleS, double scaleT, QRect rect)
+void BlobModel::addData(QString mask, QString material, double scaleS, double scaleT, QRect rect, int priority)
 {
 	Blob *b = new Blob;
 	b->mask = mask;
@@ -168,6 +183,7 @@ void BlobModel::addData(QString mask, QString material, double scaleS, double sc
 	b->scaleS = scaleS;
 	b->scaleT = scaleT;
 	b->rect = rect;
+	b->priority = priority;
 
 	items.append(b);
 }

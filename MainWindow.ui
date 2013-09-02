@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>704</width>
-    <height>421</height>
+    <width>796</width>
+    <height>504</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,8 +44,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>427</width>
-         <height>200</height>
+         <width>516</width>
+         <height>267</height>
         </rect>
        </property>
        <attribute name="label">
@@ -55,16 +55,7 @@
         <property name="fieldGrowthPolicy">
          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
-        <property name="leftMargin">
-         <number>2</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>2</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>2</number>
         </property>
         <item row="0" column="0">
@@ -192,24 +183,15 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>427</width>
-         <height>200</height>
+         <width>516</width>
+         <height>267</height>
         </rect>
        </property>
        <attribute name="label">
         <string>Water</string>
        </attribute>
        <layout class="QFormLayout" name="formLayout">
-        <property name="leftMargin">
-         <number>2</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>2</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>2</number>
         </property>
         <item row="0" column="1">
@@ -239,8 +221,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>427</width>
-         <height>200</height>
+         <width>516</width>
+         <height>267</height>
         </rect>
        </property>
        <attribute name="label">
@@ -250,16 +232,7 @@
         <property name="fieldGrowthPolicy">
          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
-        <property name="leftMargin">
-         <number>2</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>2</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>2</number>
         </property>
         <item row="0" column="0" colspan="2">
@@ -318,12 +291,18 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="vegetationTypeEdit"/>
+        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="vegetationModelLabel">
           <property name="text">
            <string>Model</string>
           </property>
          </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="vegetationModelBox"/>
         </item>
         <item row="4" column="0">
          <widget class="QLabel" name="vegetationPositionLabel">
@@ -396,11 +375,28 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="vegetationTypeEdit"/>
+        <item row="7" column="0">
+         <widget class="QLabel" name="vegetationPriorityLabel">
+          <property name="text">
+           <string>Priority</string>
+          </property>
+         </widget>
         </item>
-        <item row="3" column="1">
-         <widget class="QComboBox" name="vegetationModelBox"/>
+        <item row="7" column="1">
+         <widget class="QSlider" name="vegetationPrioritySlider">
+          <property name="value">
+           <number>99</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBelow</enum>
+          </property>
+          <property name="tickInterval">
+           <number>10</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -409,8 +405,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>427</width>
-         <height>200</height>
+         <width>516</width>
+         <height>267</height>
         </rect>
        </property>
        <attribute name="label">
@@ -420,16 +416,7 @@
         <property name="fieldGrowthPolicy">
          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
-        <property name="leftMargin">
-         <number>2</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>2</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>2</number>
         </property>
         <item row="0" column="0" colspan="2">
@@ -471,6 +458,9 @@
            <string>Mask</string>
           </property>
          </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="blobMaskBox"/>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="blobMaterialLabel">
@@ -575,12 +565,40 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="blobMaskBox"/>
+        <item row="6" column="1">
+         <widget class="QSlider" name="blobPrioritySlider">
+          <property name="value">
+           <number>99</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBelow</enum>
+          </property>
+          <property name="tickInterval">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="blobPriorityLabel">
+          <property name="text">
+           <string>Priority</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="powerupPage">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>516</width>
+         <height>267</height>
+        </rect>
+       </property>
        <attribute name="label">
         <string>PowerUps</string>
        </attribute>
@@ -588,16 +606,7 @@
         <property name="fieldGrowthPolicy">
          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
-        <property name="leftMargin">
-         <number>2</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>2</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>2</number>
         </property>
         <item row="1" column="0">
@@ -715,8 +724,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>704</width>
-     <height>19</height>
+     <width>796</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">

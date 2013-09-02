@@ -3,6 +3,7 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QSlider>
 
 void VegetationDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
@@ -51,6 +52,13 @@ void VegetationDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 		QSpinBox * edit = static_cast<QSpinBox*>(editor);
 		if(edit)
 			edit->setValue(v->number);
+		return;
+	}
+	if(editor->objectName() == "vegetationPrioritySlider")
+	{
+		QSlider * edit = static_cast<QSlider*>(editor);
+		if(edit)
+			edit->setValue(v->priority);
 		return;
 	}
 }
@@ -104,6 +112,13 @@ void VegetationDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 			v->number = edit->value();
 		return;
 	}
+	if(editor->objectName() == "vegetationPrioritySlider")
+	{
+		QSlider * edit = static_cast<QSlider*>(editor);
+		if(edit)
+			v->priority = edit->value();
+		return;
+	}
 }
 
 int VegetationModel::rowCount(const QModelIndex &parent) const
@@ -130,7 +145,7 @@ QVariant VegetationModel::data(const QModelIndex &index, int role) const
 	return QVariant();
 }
 
-void VegetationModel::addData(QString type, QString model, QPoint position, int radius, int number)
+void VegetationModel::addData(QString type, QString model, QPoint position, int radius, int number, int priority)
 {
 	Vegetation * v = new Vegetation;
 	v->type = type;
@@ -138,6 +153,7 @@ void VegetationModel::addData(QString type, QString model, QPoint position, int 
 	v->position = position;
 	v->radius = radius;
 	v->number = number;
+	v->priority = priority;
 
 	items.append(v);
 }

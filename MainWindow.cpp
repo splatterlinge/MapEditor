@@ -3,6 +3,8 @@
 
 #include <QListView>
 #include <QDoubleSpinBox>
+#include <QCursor>
+#include <QToolTip>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -31,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	vegetationMapper->addMapping(ui->vegetationPositionYSpin, 0);
 	vegetationMapper->addMapping(ui->vegetationRadiusSpin, 0);
 	vegetationMapper->addMapping(ui->vegetationNumberSpin, 0);
+	vegetationMapper->addMapping(ui->vegetationPrioritySlider, 0);
 	vegetationMapper->toFirst();
 
 	blobModel = new BlobModel();
@@ -50,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	blobMapper->addMapping(ui->blobPositionYSpin, 0);
 	blobMapper->addMapping(ui->blobSizeXSpin, 0);
 	blobMapper->addMapping(ui->blobSizeYSpin, 0);
+	blobMapper->addMapping(ui->blobPrioritySlider, 0);
 	blobMapper->toFirst();
 
 	powerupModel = new PowerupModel();
@@ -187,7 +191,8 @@ void MainWindow::load()
 						config->value("model").toString(),
 						config->value("position").toPoint(),
 						config->value("radius").toInt(),
-						config->value("number").toInt()
+						config->value("number").toInt(),
+						config->value("priority").toInt()
 						);
 		}
 	config->endArray();
@@ -203,7 +208,8 @@ void MainWindow::load()
 						config->value("material").toString(),
 						config->value("materialScaleS").toDouble(),
 						config->value("materialScaleT").toDouble(),
-						config->value("rect").toRect()
+						config->value("rect").toRect(),
+						config->value("priority").toInt()
 						);
 		}
 	config->endArray();
@@ -279,8 +285,6 @@ void MainWindow::update()
 		{
 			if(i == ui->blobBox->currentIndex())
 			{
-				Blob *v = blobList.at(i);
-
 				QImage alpha(baseDir+ui->blobMaskBox->currentText());
 				if(!alpha.isNull())
 				{
@@ -400,6 +404,7 @@ void MainWindow::on_actionSave_triggered()
 			config->setValue("position", v->position);
 			config->setValue("radius", v->radius);
 			config->setValue("number", v->number);
+			config->setValue("priority", v->priority);
 		}
 		config->endArray();
 
@@ -415,6 +420,8 @@ void MainWindow::on_actionSave_triggered()
 			config->setValue("materialScaleS", v->scaleS);
 			config->setValue("materialScaleT", v->scaleT);
 			config->setValue("rect", v->rect);
+			qDebug() << v->priority;
+			config->setValue("priority", v->priority);
 		}
 		config->endArray();
 
@@ -502,7 +509,7 @@ void MainWindow::on_terrainSizeZSpin_valueChanged(double value)
 void MainWindow::on_vegetationAdd_clicked()
 {
 	int index = vegetationModel->getList().size();
-	vegetationModel->addData("", "", QPoint(0,0), 0, 0);
+	vegetationModel->addData("", "", QPoint(0,0), 0, 0, 100);
 	ui->vegetationBox->setCurrentIndex(index);
 }
 
@@ -516,7 +523,7 @@ void MainWindow::on_vegetationDelete_clicked()
 void MainWindow::on_blobAdd_clicked()
 {
 	int index = blobModel->getList().size();
-	blobModel->addData("", "", 0, 0, QRect());
+	blobModel->addData("", "", 0, 0, QRect(), 100);
 	ui->blobBox->setCurrentIndex(index);
 }
 
@@ -525,4 +532,14 @@ void MainWindow::on_blobDelete_clicked()
 	int index = ui->blobBox->currentIndex();
 	blobModel->removeRow(index, QModelIndex());
 	ui->blobBox->setCurrentIndex(index-1);
+}
+
+void MainWindow::on_vegetationPrioritySlider_sliderMoved(int position)
+{
+	QToolTip::showText(QCursor::pos(), QString::number(position));
+}
+
+void MainWindow::on_blobPrioritySlider_sliderMoved(int position)
+{
+	QToolTip::showText(QCursor::pos(), QString::number(position));
 }

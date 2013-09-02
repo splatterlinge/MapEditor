@@ -17,6 +17,7 @@ public:
 	QPoint position;
 	int radius;
 	int number;
+	int priority;
 };
 
 Q_DECLARE_METATYPE(Vegetation*)
@@ -36,7 +37,7 @@ public:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-	void addData(QString type, QString model, QPoint position, int radius, int number);
+	void addData(QString type, QString model, QPoint position, int radius, int number, int priority);
 	bool removeRow(int row, const QModelIndex &parent);
 
 	QList<Vegetation *> getList() { return items; }

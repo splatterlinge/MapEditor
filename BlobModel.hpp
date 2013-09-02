@@ -19,6 +19,7 @@ public:
 	double scaleS;
 	double scaleT;
 	QRect rect;
+	int priority;
 };
 
 Q_DECLARE_METATYPE(Blob*)
@@ -38,7 +39,7 @@ public:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-	void addData(QString mask, QString material, double scaleS, double scaleT, QRect rect);
+	void addData(QString mask, QString material, double scaleS, double scaleT, QRect rect, int priority);
 	bool removeRow(int row, const QModelIndex &parent);
 
 	QList<Blob *> getList() { return items; }

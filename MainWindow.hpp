@@ -80,6 +80,10 @@ private slots:
 
 	void on_actionLoad_triggered();
 
+	void on_vegetationPrioritySlider_sliderMoved(int position);
+
+	void on_blobPrioritySlider_sliderMoved(int position);
+
 private:
 	Ui::MainWindow *ui;
 
